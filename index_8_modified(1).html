@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paniti Roland</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@200;300;400&family=Inter:wght@200;300;400&family=Geist+Pixel&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black: #f2f0eb;
+  --white: #0a0a0a;
+  --muted: rgba(10,10,10,0.45);
+  --sans: 'Barlow', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --nav-h: 112px; /* 2x56px */
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--sans);
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+  padding-bottom: var(--nav-h);
+  transition: background-color 0.4s ease;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 200;
+  height: var(--nav-h);
+  background: transparent;
+  
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 2.5rem 1.1rem;
+}
+
+.nav-logo {
+  font-family: 'Geist Pixel', 'Inter', sans-serif !important;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #ffffff;
+  mix-blend-mode: difference;
+  text-decoration: none;
+  transition: filter 0.3s, opacity 0.3s;
+}
+
+
+.nav-links {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.nav-links a {
+  font-family: 'Geist Pixel', 'Inter', sans-serif !important;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #ffffff;
+  mix-blend-mode: difference;
+  text-decoration: none;
+  transition: filter 0.3s, opacity 0.3s;
+}
+
+
+
+
+
+/* ── HERO SLIDESHOW ── */
+#home {
+  position: relative;
+  height: calc(100vh - var(--nav-h));
+  overflow: hidden;
+}
+
+.slides {
+  position: absolute;
+  inset: 0;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  pointer-events: none;
+}
+
+.slide.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.slide-video {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.slide-video img,
+.slide-video video {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+
+.slide-video iframe {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 100vw;
+  height: 56.25vw;
+  min-height: 100%;
+  min-width: 177.78vh;
+  transform: translate(-50%, -50%);
+  border: none;
+  pointer-events: none;
+}
+
+.slide-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(10,10,10,0.85) 0%, rgba(10,10,10,0.15) 60%);
+}
+
+.slide-info {
+  position: absolute;
+  bottom: 1.75rem;
+  left: 2.5rem;
+  z-index: 10;
+}
+
+.slide-title {
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  text-transform: lowercase;
+  color: rgba(242,240,235,0.45);
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.slide-title:hover { opacity: 0.6; }
+
+/* play overlay */
+.play-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  opacity: 0;
+  transition: opacity 0.3s;
+  cursor: pointer;
+}
+
+.slide:hover .play-overlay { opacity: 1; }
+
+.play-circle {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: rgba(242,240,235,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s;
+}
+
+.play-circle:hover {
+  background: rgba(242,240,235,0.22);
+}
+
+.play-circle svg {
+  width: 20px; height: 20px;
+  fill: var(--white);
+  margin-left: 3px;
+}
+
+/* arrows — bottom-right corner of the hero, white, side by side */
+.hero-controls {
+  position: absolute;
+  bottom: 20px;
+  right: 2.5rem;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.arrow {
+  position: static;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #ffffff;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+  padding: 0.3rem;
+}
+.arrow:hover { opacity: 0.35; }
+.arrow svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+
+/* ── CONTENT SECTIONS ── */
+.section {
+  padding: 8rem 0;
+  position: relative;
+  overflow: visible;
+}
+
+.section-label {
+  font-size: 0.62rem;
+  font-weight: 300;
+  letter-spacing: 0.18em;
+  text-transform: lowercase;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+}
+
+.section-intro {
+  padding: 0 2.5rem;
+  max-width: 520px;
+  margin-bottom: 5rem;
+}
+
+.section-title {
+  font-size: 1.8rem;
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  text-transform: lowercase;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.section-body {
+  font-size: 0.88rem;
+  font-weight: 300;
+  color: rgba(242,240,235,0.6);
+  line-height: 1.9;
+}
+
+.section-body p { margin-bottom: 1.2rem; }
+.section-body p:last-child { margin-bottom: 0; }
+
+/* ── CHAOTIC GRID ── */
+.chaos-grid {
+  position: relative;
+  width: 100%;
+  padding: 0 2.5rem;
+}
+
+.chaos-item {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.chaos-item .item-label {
+  margin-top: 0.6rem;
+  font-size: 0.65rem;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  text-transform: lowercase;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+}
+
+.chaos-item:hover .thumb { opacity: 0.75; }
+.chaos-item .thumb {
+  display: block;
+  transition: opacity 0.3s;
+}
+
+/* Commercial thumbnails: the Instagram player is created only after a click. */
+#commercial .thumb {
+  position: relative;
+  overflow: hidden;
+  background: var(--c);
+}
+#commercial .thumb img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+#commercial .chaos-item:hover .thumb img { transform: scale(1.03); }
+#commercial .thumb::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 45%, rgba(0,0,0,0.35));
+  pointer-events: none;
+}
+.thumb-play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  width: 44px;
+  height: 44px;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(242,240,235,0.72);
+  border-radius: 50%;
+  background: rgba(10,10,10,0.28);
+  color: var(--white);
+  display: grid;
+  place-items: center;
+  font-size: 0.7rem;
+  line-height: 1;
+}
+
+/* colour placeholders */
+.thumb {
+  display: block;
+}
+
+/* aspect ratio boxes */
+.r-16-9  { aspect-ratio: 16/9; }
+.r-9-16  { aspect-ratio: 9/16; }
+.r-4-3   { aspect-ratio: 4/3;  }
+.r-1-1   { aspect-ratio: 1/1;  }
+
+/* ── FILM SECTION ── */
+#film .chaos-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+#film .item-a {
+  grid-column: 1 / 8;
+  margin-top: 0;
+  --c: #1a3a2a;
+}
+#film .item-b {
+  grid-column: 7 / 13;
+  margin-top: 6rem;
+  --c: #2a1a1a;
+}
+#film .item-c {
+  grid-column: 2 / 7;
+  margin-top: -2rem;
+  --c: #1a1a2a;
+}
+#film .item-d {
+  grid-column: 8 / 12;
+  margin-top: 3rem;
+  --c: #2a2a1a;
+}
+
+/* ── SZEMÉLYES SECTION ── */
+#személyes .chaos-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.2rem;
+  align-items: start;
+}
+
+#személyes .item-a {
+  grid-column: 1 / 5;
+  margin-top: 2rem;
+  --c: #3a1a2a;
+}
+#személyes .item-b {
+  grid-column: 4 / 9;
+  margin-top: -1rem;
+  --c: #1a2a3a;
+}
+#személyes .item-c {
+  grid-column: 8 / 13;
+  margin-top: 4rem;
+  --c: #2a3a1a;
+}
+#személyes .item-d {
+  grid-column: 2 / 6;
+  margin-top: 1.5rem;
+  --c: #3a2a1a;
+}
+#személyes .item-e {
+  grid-column: 6 / 10;
+  margin-top: -3rem;
+  --c: #1a3a3a;
+}
+#személyes .item-f {
+  grid-column: 9 / 13;
+  margin-top: 2rem;
+  --c: #2a1a3a;
+}
+
+/* ── COMMERCIAL SECTION ── */
+#commercial .chaos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  align-items: start;
+  width: min(100%, 1320px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#commercial .chaos-item { justify-self: center; }
+#commercial .item-a { width: 85%; order: 4; }
+#commercial .item-b { width: 100%; order: 1; }
+#commercial .item-c { width: 72%; order: 6; }
+#commercial .item-d { width: 95%; order: 3; }
+#commercial .item-e { width: 80%; order: 5; }
+#commercial .item-f { width: 92%; order: 2; }
+
+/* ── VIDEO MODAL ── */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: rgba(0,0,0,0.95);
+  align-items: center;
+  justify-content: center;
+}
+.modal.open { display: flex; }
+
+.modal-inner {
+  width: 90%;
+  max-width: 1100px;
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: -2.5rem; right: 0;
+  background: none; border: none;
+  color: var(--muted);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: lowercase;
+  cursor: pointer;
+  font-family: var(--sans);
+  transition: color 0.2s;
+}
+.modal-close:hover { color: var(--white); }
+
+.modal-frame { width: 100%; aspect-ratio: 16/9; }
+.modal-frame iframe { width: 100%; height: 100%; border: none; }
+.modal-frame.is-portrait {
+  width: min(100%, 430px);
+  margin: 0 auto;
+  aspect-ratio: 9/16;
+}
+
+/* ── CV SECTION ── */
+#cv {
+  padding: 8rem 2.5rem;
+}
+
+.cv-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem 6rem;
+  max-width: 800px;
+  margin-top: 3rem;
+}
+
+.cv-block { }
+
+.cv-block-title {
+  font-size: 0.62rem;
+  font-weight: 300;
+  letter-spacing: 0.18em;
+  text-transform: lowercase;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+}
+
+.cv-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0.6rem 0;
+  gap: 1rem;
+}
+
+.cv-row-name {
+  font-size: 0.82rem;
+  font-weight: 300;
+  text-transform: lowercase;
+  color: var(--white);
+}
+
+.cv-row-meta {
+  font-size: 0.65rem;
+  font-weight: 300;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  text-transform: lowercase;
+}
+
+.cv-download {
+  margin-top: 3.5rem;
+  font-size: 0.72rem;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  text-transform: lowercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.cv-download:hover { color: var(--white); }
+
+/* ── KAPCSOLAT ── */
+#kapcsolat {
+  padding: 6rem 2.5rem;
+}
+
+/* ── MOBILE ── */
+@media (max-width: 640px) {
+  :root { --nav-h: 80px; }
+  nav { padding: 0 1.5rem 0.9rem; }
+  .nav-logo { left: 1.5rem; }
+  .nav-links { gap: 1.2rem; }
+  .section { padding: 5rem 0; }
+  .section-intro { padding: 0 1.5rem; }
+  .chaos-grid { padding: 0 1.5rem; }
+  #film .chaos-grid,
+  #személyes .chaos-grid,
+  #commercial .chaos-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  #film .item-a, #film .item-b, #film .item-c, #film .item-d,
+  #személyes .item-a, #személyes .item-b, #személyes .item-c,
+  #személyes .item-d, #személyes .item-e, #személyes .item-f {
+    grid-column: auto;
+    margin-top: 0;
+    transform: none;
+    width: 100%;
+  }
+  .cv-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .arrow { display: none; }
+  #cv, #kapcsolat { padding: 5rem 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#home" class="nav-logo">Paniti Roland</a>
+  <div class="nav-links">
+    <a href="#film">film</a>
+    <a href="#személyes">személyes</a>
+    <a href="#commercial">commercial</a>
+    <a href="#kapcsolat">kapcsolat</a>
+  </div>
+</nav>
+
+<!-- HOME — SLIDESHOW -->
+<section id="home">
+  <div class="slides" id="slides">
+
+    <!-- Slide 1 — kuty -->
+    <div class="slide active" data-index="0">
+      <div class="slide-video">
+        <video src="kuty.mp4" autoplay muted loop playsinline></video>
+      </div>
+      <div class="slide-scrim"></div>
+      <div class="slide-info">
+        <div class="slide-title">kuty</div>
+      </div>
+    </div>
+
+    <!-- Slide 2 — lov -->
+    <div class="slide" data-index="1">
+      <div class="slide-video">
+        <video src="lov.mp4" autoplay muted loop playsinline></video>
+      </div>
+      <div class="slide-scrim"></div>
+      <div class="slide-info">
+        <div class="slide-title">lov</div>
+      </div>
+    </div>
+
+    <!-- Slide 3 — patak -->
+    <div class="slide" data-index="2">
+      <div class="slide-video">
+        <video src="patak.mp4" autoplay muted loop playsinline></video>
+      </div>
+      <div class="slide-scrim"></div>
+      <div class="slide-info">
+        <div class="slide-title">patak</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="hero-controls">
+    <button class="arrow arrow-prev" onclick="prev()"><svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg></button>
+    <button class="arrow arrow-next" onclick="next()"><svg viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg></button>
+  </div>
+</section>
+
+<!-- FILM -->
+<section class="section" id="film">
+  <div class="section-intro">
+    <div class="section-label">film — operatőr / rendező</div>
+    <h2 class="section-title">a kamera mögül<br>a kamera elé</h2>
+    <div class="section-body">
+      <p>Rövidfilmeken és dokumentumfilmeken operatőrként dolgoztam, majd rendezőként is. Az operatőri múlt nem korlát — tudom, hogyan épül fel egy jelenet, mert én fényképeztem le.</p>
+    </div>
+  </div>
+  <div class="chaos-grid">
+    <div class="chaos-item item-a" onclick="openModal('aOYyGCWZw74')">
+      <div class="thumb r-16-9" style="background:var(--c)"></div>
+      <div class="item-label"><span>rendezett rövidfilm — 2024</span><span>rendező</span></div>
+    </div>
+    <div class="chaos-item item-b" onclick="openModal('')">
+      <div class="thumb r-4-3" style="background:var(--c)"></div>
+      <div class="item-label"><span>dokumentumfilm — 2023</span><span>operatőr</span></div>
+    </div>
+    <div class="chaos-item item-c" onclick="openModal('')">
+      <div class="thumb r-16-9" style="background:var(--c)"></div>
+      <div class="item-label"><span>rövidfilm — 2023</span><span>operatőr</span></div>
+    </div>
+    <div class="chaos-item item-d" onclick="openModal('')">
+      <div class="thumb r-16-9" style="background:var(--c)"></div>
+      <div class="item-label"><span>rövidfilm — 2022</span><span>operatőr</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SZEMÉLYES -->
+<section class="section" id="személyes">
+  <div class="section-intro">
+    <div class="section-label">személyes</div>
+    <h2 class="section-title">amit csinálok,<br>mert csinálni kell</h2>
+    <div class="section-body">
+      <p>Snitt-szerű, művészi felvételek és képek — a szerelem projektem. Nem megrendelésre, nem műfajba zárva. Ezekben jelenik meg legtisztábban az, ahogyan látok.</p>
+    </div>
+  </div>
+  <div class="chaos-grid">
+    <div class="chaos-item item-a" onclick="openModal('Iujsp2JDJX0')">
+      <div class="thumb r-16-9" style="background:var(--c)"></div>
+      <div class="item-label"><span>szerelem — 2024</span><span>essayfilm</span></div>
+    </div>
+    <div class="chaos-item item-b">
+      <div class="thumb r-1-1" style="background:var(--c)"></div>
+      <div class="item-label"><span>fotó sorozat — 2024</span><span>fotó</span></div>
+    </div>
+    <div class="chaos-item item-c">
+      <div class="thumb r-9-16" style="background:var(--c)"></div>
+      <div class="item-label"><span>snitt — 2023</span><span>fotó</span></div>
+    </div>
+    <div class="chaos-item item-d">
+      <div class="thumb r-1-1" style="background:var(--c)"></div>
+      <div class="item-label"><span>utca — 2023</span><span>fotó</span></div>
+    </div>
+    <div class="chaos-item item-e" onclick="openModal('')">
+      <div class="thumb r-16-9" style="background:var(--c)"></div>
+      <div class="item-label"><span>kísérlet — 2022</span><span>kísérleti</span></div>
+    </div>
+    <div class="chaos-item item-f">
+      <div class="thumb r-9-16" style="background:var(--c)"></div>
+      <div class="item-label"><span>csendélet — 2022</span><span>fotó</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMERCIAL -->
+<section class="section" id="commercial">
+  <div class="section-intro">
+    <div class="section-label">commercial & social</div>
+    <h2 class="section-title">tartalom,<br>ami működik</h2>
+    <div class="section-body">
+      <p>Marketing céggel közösen készített tartalmak — helyszínek, márkák, események. Ugyanolyan vizuális precizitással, mint a személyes munkáknál.</p>
+    </div>
+  </div>
+  <div class="chaos-grid">
+    <div class="chaos-item item-f" onclick="openInstagram('https://www.instagram.com/p/DaLI8QWABD_/')">
+      <div class="thumb r-9-16"><img src="6.jpg" alt="Social media munka 6" loading="lazy"><span class="thumb-play" aria-hidden="true">▶</span></div>
+      <div class="item-label"><span>social — 06</span><span>instagram / 9:16</span></div>
+    </div>
+    <div class="chaos-item item-a" onclick="openInstagram('https://www.instagram.com/reel/Dacagwyjau1/')">
+      <div class="thumb r-9-16"><img src="1.jpg" alt="Social media munka 1" loading="lazy"><span class="thumb-play" aria-hidden="true">▶</span></div>
+      <div class="item-label"><span>social — 01</span><span>instagram / 9:16</span></div>
+    </div>
+    <div class="chaos-item item-b" onclick="openInstagram('https://www.instagram.com/reel/DSH8RZsCNSL/')">
+      <div class="thumb r-9-16"><img src="2.jpg" alt="Social media munka 2" loading="lazy"><span class="thumb-play" aria-hidden="true">▶</span></div>
+      <div class="item-label"><span>social — 02</span><span>instagram / 9:16</span></div>
+    </div>
+    <div class="chaos-item item-c" onclick="openInstagram('https://www.instagram.com/p/DZZd4RnjbRn/')">
+      <div class="thumb r-9-16"><img src="3.jpg" alt="Social media munka 3" loading="lazy"><span class="thumb-play" aria-hidden="true">▶</span></div>
+      <div class="item-label"><span>social — 03</span><span>instagram / 9:16</span></div>
+    </div>
+    <div class="chaos-item item-d" onclick="openInstagram('https://www.instagram.com/reel/DTh2ZhGiiU4/')">
+      <div class="thumb r-9-16"><img src="4.jpg" alt="Social media munka 4" loading="lazy"><span class="thumb-play" aria-hidden="true">▶</span></div>
+      <div class="item-label"><span>social — 04</span><span>instagram / 9:16</span></div>
+    </div>
+    <div class="chaos-item item-e" onclick="openInstagram('https://www.instagram.com/reel/DSXLUV5iDYj/')">
+      <div class="thumb r-9-16"><img src="5.jpg" alt="Social media munka 5" loading="lazy"><span class="thumb-play" aria-hidden="true">▶</span></div>
+      <div class="item-label"><span>social — 05</span><span>instagram / 9:16</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- CV -->
+<section id="cv">
+  <div class="section-label">cv</div>
+  <h2 class="section-title">háttér</h2>
+  <div class="cv-grid">
+    <div class="cv-block">
+      <div class="cv-block-title">képzés</div>
+      <div class="cv-row">
+        <span class="cv-row-name">iskola / főiskola neve</span>
+        <span class="cv-row-meta">2018–2022</span>
+      </div>
+      <div class="cv-row">
+        <span class="cv-row-name">workshop / kurzus</span>
+        <span class="cv-row-meta">2023</span>
+      </div>
+    </div>
+    <div class="cv-block">
+      <div class="cv-block-title">tapasztalat</div>
+      <div class="cv-row">
+        <span class="cv-row-name">rövidfilm — rendező</span>
+        <span class="cv-row-meta">2024</span>
+      </div>
+      <div class="cv-row">
+        <span class="cv-row-name">dokumentumfilm — operatőr</span>
+        <span class="cv-row-meta">2023</span>
+      </div>
+      <div class="cv-row">
+        <span class="cv-row-name">rövidfilm — operatőr</span>
+        <span class="cv-row-meta">2022–2023</span>
+      </div>
+      <div class="cv-row">
+        <span class="cv-row-name">marketing tartalom</span>
+        <span class="cv-row-meta">2022–</span>
+      </div>
+    </div>
+    <div class="cv-block">
+      <div class="cv-block-title">eszközök</div>
+      <div class="cv-row">
+        <span class="cv-row-name">kamera</span>
+        <span class="cv-row-meta">—</span>
+      </div>
+      <div class="cv-row">
+        <span class="cv-row-name">DaVinci Resolve</span>
+        <span class="cv-row-meta">post</span>
+      </div>
+    </div>
+    <div class="cv-block">
+      <div class="cv-block-title">nyelv</div>
+      <div class="cv-row">
+        <span class="cv-row-name">magyar</span>
+        <span class="cv-row-meta">anyanyelv</span>
+      </div>
+      <div class="cv-row">
+        <span class="cv-row-name">angol</span>
+        <span class="cv-row-meta">—</span>
+      </div>
+    </div>
+  </div>
+  <a href="#" class="cv-download">↓ cv letöltése</a>
+</section>
+
+<!-- KAPCSOLAT -->
+<section id="kapcsolat">
+  <div class="section-label">kapcsolat</div>
+  <h2 class="section-title">dolgozzunk<br>együtt</h2>
+  <div class="section-body">
+    <p>Nyitott vagyok új projektekre, együttműködésekre és megkeresésekre. Ha valamit csinálni szeretnél — írj.</p>
+    <p style="margin-top:1.2rem"><a href="mailto:roland@panitiroland.com" style="color:var(--white);">roland@panitiroland.com</a></p>
+  </div>
+</section>
+
+<!-- MODAL -->
+<div class="modal" id="modal" onclick="closeOutside(event)">
+  <div class="modal-inner">
+    <button class="modal-close" onclick="closeModal()">✕ bezárás</button>
+    <div class="modal-frame">
+      <iframe id="mframe" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+  </div>
+</div>
+
+<script>
+// Nav hover effect: blur menu items proportional to their distance.
+const navLogo = document.querySelector('.nav-logo');
+const navItems = Array.from(document.querySelectorAll('.nav-links a'));
+const MAX_BLUR = 1; // px, applied to the farthest item
+
+function centerX(el) {
+  const r = el.getBoundingClientRect();
+  return r.left + r.width / 2;
+}
+
+navItems.forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    const hoveredX = centerX(el);
+    const distances = navItems.map(other => Math.abs(centerX(other) - hoveredX));
+    const maxDist = Math.max(...distances) || 1;
+
+    navItems.forEach((other, i) => {
+      if (other === el) {
+        other.style.filter = 'blur(0px)';
+        return;
+      }
+      const t = distances[i] / maxDist;
+      other.style.filter = `blur(${(t * MAX_BLUR).toFixed(2)}px)`;
+    });
+  });
+
+  el.addEventListener('mouseleave', () => {
+    navItems.forEach(other => other.style.filter = '');
+  });
+});
+
+// The logo stays sharp; hovering it only blurs the menu links.
+navLogo.addEventListener('mouseenter', () => {
+  navItems.forEach(el => el.style.filter = `blur(${MAX_BLUR}px)`);
+});
+navLogo.addEventListener('mouseleave', () => {
+  navItems.forEach(el => el.style.filter = '');
+});
+
+let current = 0;
+const total = document.querySelectorAll('.slide').length;
+
+function goTo(index) {
+  const slides = document.querySelectorAll('.slide');
+  slides[current].classList.remove('active');
+  current = index;
+  slides[current].classList.add('active');
+  const video = slides[current].querySelector('video');
+  if (video) {
+    video.currentTime = 0;
+    video.play();
+  }
+}
+
+function next() { goTo((current + 1) % total); }
+function prev() { goTo((current - 1 + total) % total); }
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+
+// Hero slide navigation is now driven only by the arrow buttons (see prev()/next() and onclick handlers)
+const hero = document.getElementById('home');
+
+// Modal
+function openModal(id) {
+  document.querySelector('.modal-frame').classList.remove('is-portrait');
+  document.getElementById('mframe').src = 'https://www.youtube.com/embed/' + id + '?autoplay=1&rel=0';
+  document.getElementById('modal').classList.add('open');
+}
+function openInstagramModal(url) {
+  document.querySelector('.modal-frame').classList.add('is-portrait');
+  document.getElementById('mframe').src = url.replace(/\/$/, '') + '/embed/';
+  document.getElementById('modal').classList.add('open');
+}
+function openInstagram(url) {
+  window.open(url, '_blank', 'noopener,noreferrer');
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.getElementById('mframe').src = '';
+}
+function closeOutside(e) {
+  if (e.target === document.getElementById('modal')) closeModal();
+}
+
+// Dynamic nav contrast
+const nav=document.querySelector('nav');
+const navEls=[document.querySelector('.nav-logo'),...document.querySelectorAll('.nav-links a')];
+function updateNavContrast(){
+ const r=nav.getBoundingClientRect();
+ let el=document.elementFromPoint(innerWidth/2,r.top+r.height/2);
+ let bg='rgb(255,255,255)';
+ while(el){
+  const c=getComputedStyle(el).backgroundColor;
+  if(c&&c!='rgba(0, 0, 0, 0)'&&c!='transparent'){bg=c;break;}
+  el=el.parentElement;
+ }
+ const m=bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+ let col='#fff';
+ if(m){
+  const [R,G,B]=m.slice(1).map(Number);
+  const l=.2126*R+.7152*G+.0722*B;
+  col=l>140?'#000':'#fff';
+ }
+ navEls.forEach(e=>{e.style.color=col;e.style.mixBlendMode='normal';});
+}
+addEventListener('scroll',updateNavContrast,{passive:true});
+addEventListener('resize',updateNavContrast);
+setInterval(updateNavContrast,250);
+updateNavContrast();
+
+</script>
+
+</body>
+</html>
