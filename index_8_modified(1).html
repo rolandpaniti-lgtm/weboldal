@@ -53,7 +53,8 @@ nav {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: #ffffff;
-  mix-blend-mode: difference;
+  filter: invert(1);
+  mix-blend-mode: multiply;
   text-decoration: none;
   transition: filter 0.3s, opacity 0.3s;
 }
@@ -73,11 +74,11 @@ nav {
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: #ffffff;
-  mix-blend-mode: difference;
+  filter: invert(1);
+  mix-blend-mode: multiply;
   text-decoration: none;
   transition: filter 0.3s, opacity 0.3s;
 }
-
 
 
 
@@ -886,33 +887,6 @@ function closeModal() {
 function closeOutside(e) {
   if (e.target === document.getElementById('modal')) closeModal();
 }
-
-// Dynamic nav contrast
-const nav=document.querySelector('nav');
-const navEls=[document.querySelector('.nav-logo'),...document.querySelectorAll('.nav-links a')];
-function updateNavContrast(){
- const r=nav.getBoundingClientRect();
- let el=document.elementFromPoint(innerWidth/2,r.top+r.height/2);
- let bg='rgb(255,255,255)';
- while(el){
-  const c=getComputedStyle(el).backgroundColor;
-  if(c&&c!='rgba(0, 0, 0, 0)'&&c!='transparent'){bg=c;break;}
-  el=el.parentElement;
- }
- const m=bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
- let col='#fff';
- if(m){
-  const [R,G,B]=m.slice(1).map(Number);
-  const l=.2126*R+.7152*G+.0722*B;
-  col=l>140?'#000':'#fff';
- }
- navEls.forEach(e=>{e.style.color=col;e.style.mixBlendMode='normal';});
-}
-addEventListener('scroll',updateNavContrast,{passive:true});
-addEventListener('resize',updateNavContrast);
-setInterval(updateNavContrast,250);
-updateNavContrast();
-
 </script>
 
 </body>
